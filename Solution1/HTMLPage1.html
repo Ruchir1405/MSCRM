@@ -1,0 +1,52 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+
+    <script>
+        function LoadfromCRMPage() {
+
+            // In JavaScript Web Resource
+            //var accountName = formContext.getAttribute("name").getValue();
+
+            // In HTML Web Resource, follow old practice only.
+            var accountName = parent.Xrm.Page.getAttribute("name").getValue();
+
+            document.getElementById("textbox1").value = accountName;
+        }
+
+        function LoadfromServer() {
+            parent.Xrm.WebApi.retrieveMultipleRecords("account", "?$select=name").then(
+                function success(result) {
+                    var desc = "";
+                    for (var i = 0; i < result.entities.length; i++) {
+                        desc += result.entities[i].name + " ";
+
+
+                        console.log(result.entities[i].name);
+                    }
+                    document.getElementById("textarea").innerText = desc;
+                    // perform additional operations on retrieved records
+                },
+                function (error) {
+                    console.log(error.message);
+                    // handle error conditions
+                }
+            );
+        }
+    </script>
+</head>
+<body>
+
+    Name <input type="text" id="textbox1" />
+
+    <input type="button" value="Load from CRM Page" onclick="LoadfromCRMPage()" />
+
+    All Accounts from CRM
+<textarea name="message" id="textarea" rows="10" cols="30"></textarea>
+
+    <input type="button" value="Load Accounts from CRM Server" onclick="LoadfromServer()" />
+</body>
+</html>
